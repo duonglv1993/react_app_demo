@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "google-maps-react": "^2.0.2",
     "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-datepicker": "^2.0.0",
     "react-datetime-picker": "^2.1.1",
-    "react-dom": "^16.7.0"
+    "react-dom": "^16.7.0",
+    "react-google-maps": "^9.4.5"
   },
   "eslintConfig": {
     "extends": "react-app"
