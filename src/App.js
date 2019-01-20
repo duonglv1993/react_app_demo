@@ -160,7 +160,7 @@ const MapWithASearchBox = compose(
     >
       <input
         type="text"
-        placeholder="Customized your placeholder"
+        placeholder="Nhập nơi sinh của bạn"
         style={{
           boxSizing: `border-box`,
           border: `1px solid transparent`,
