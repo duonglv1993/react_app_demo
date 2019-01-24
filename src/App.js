@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './App.css';
 import { isDate } from 'util';
+import Geocode from "react-geocode";
 
 class App extends Component {
   constructor(props) {
@@ -89,6 +90,15 @@ const {
 } = require("react-google-maps");
 const { SearchBox } = require("react-google-maps/lib/components/places/SearchBox");
 
+
+  const coords = {
+    lat: 21.028511,
+    lng: 105.804817
+  };
+
+  const googleMapApi = 'AIzaSyAgYWSGICS5a7He-j0IRLowSyxUU46nchs';
+  Geocode.setApiKey(googleMapApi);
+
 const MapWithASearchBox = compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyAgYWSGICS5a7He-j0IRLowSyxUU46nchs&v=3.exp&libraries=geometry,drawing,places",
@@ -103,9 +113,15 @@ const MapWithASearchBox = compose(
       this.setState({
         bounds: null,
         center: {
-          lat: 41.9, lng: -87.624
+          lat: 21.028511, lng: 105.804817
         },
-        markers: [],
+        markers: [{
+          name: "Current position",
+          position: {
+            lat: 21.028511,
+            lng: 105.804817
+          }
+        }],
         onMapMounted: ref => {
           refs.map = ref;
         },
@@ -117,6 +133,21 @@ const MapWithASearchBox = compose(
         },
         onSearchBoxMounted: ref => {
           refs.searchBox = ref;
+        },
+        onMarkerDragEnd: (event) => {
+          const lat = event.latLng.lat();
+          const lng = event.latLng.lng();
+          console.log(lat + ' : ' + lng);
+          Geocode.fromLatLng(lat, lng).then(
+            response => {
+              const address = response.results[0].formatted_address;
+              console.log(address);
+              document.getElementById("input_address").value = address;
+            },
+            error => {
+              console.error(error);
+            }
+          );
         },
         onPlacesChanged: () => {
           const places = refs.searchBox.getPlaces();
@@ -138,7 +169,6 @@ const MapWithASearchBox = compose(
             center: nextCenter,
             markers: nextMarkers,
           });
-          // refs.map.fitBounds(bounds);
         },
       })
     },
@@ -159,6 +189,7 @@ const MapWithASearchBox = compose(
       onPlacesChanged={props.onPlacesChanged}
     >
       <input
+        id="input_address"
         type="text"
         placeholder="Nhập nơi sinh của bạn"
         style={{
@@ -177,7 +208,11 @@ const MapWithASearchBox = compose(
       />
     </SearchBox>
     {props.markers.map((marker, index) =>
-      <Marker key={index} position={marker.position} />
+      <Marker key={index} position={marker.position} draggable={true} 
+      lat={coords.lat}
+      lng={coords.lng} 
+      onDragEnd ={props.onMarkerDragEnd}
+      name={marker.name}/>
     )}
   </GoogleMap>
 );
